@@ -86,14 +86,24 @@ def main():
         
         for repo in repos["nodes"]:
             repo_name = repo["name"]
-            default_branch = repo["defaultBranchRef"]["name"]
-            protection_rule = repo["defaultBranchRef"]["branchProtectionRule"]
-            
-            if not protection_rule:
-                print(f"Enabling branch protection for {repo_name} on branch {default_branch}")
-                enable_branch_protection(repo["id"], default_branch)
+          
+            if repo["defaultBranchRef"]:
+                #print(f"No default branch found for {repo_name}")
+                #continue
+                default_branch = repo["defaultBranchRef"]["name"]
+                protection_rule = repo["defaultBranchRef"]["branchProtectionRule"]
+                
+                if not protection_rule:
+                    print(f"Enabling branch protection for {repo_name} on branch {default_branch}")
+                    enable_branch_protection(repo["id"], default_branch)
+                else:
+                    print(f"Branch protection already enabled for {repo_name} on branch {default_branch}")
             else:
-                print(f"Branch protection already enabled for {repo_name} on branch {default_branch}")
+                # create readme.md file
+                print(f"No default branch found for {repo_name}")
+                #create_readme(repo["name"])
+                print(f"Creating README.md for {repo_name}")
+                #enable_branch_protection(repo["id"], "main")
         
         has_next_page = repos["pageInfo"]["hasNextPage"]
         cursor = repos["pageInfo"]["endCursor"]
